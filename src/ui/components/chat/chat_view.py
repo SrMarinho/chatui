@@ -3,6 +3,7 @@ from textual.app import ComposeResult
 from textual.widgets import Static, Label, Input, Button
 from textual.containers import VerticalScroll, HorizontalGroup
 from src.models.message import Message
+from src.models.chat import Chat
 
 
 class ChatView(Widget):
@@ -13,8 +14,8 @@ class ChatView(Widget):
         }
     """
 
-    def __init__(self) -> None:
-        super().__init__()
+    def __init__(self, chat: Chat, *args, **kwargs) -> None:
+        super().__init__(*args, **kwargs)
         self.current_text = ""
         self.messages: list[Message] = []
     
