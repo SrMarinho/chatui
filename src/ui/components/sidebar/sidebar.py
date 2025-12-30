@@ -10,8 +10,8 @@ from src.models.chat import Chat
 
 class Sidebar(Widget):
     DEFAULT_CSS = """
-        Sidebar > * {
-            height: 100%;
+        #chats_container > * {
+            height: 6;
         }
     """
     """Sidebar component for the UI."""

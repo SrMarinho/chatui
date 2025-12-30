@@ -22,7 +22,6 @@ class MainScreen(Screen):
     chats: reactive[list[Chat]] = reactive([])
     current_chat = None
 
-    
     def compose(self) -> ComposeResult:
         """Compose the main screen UI components."""
         with Horizontal():
