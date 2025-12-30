@@ -22,7 +22,6 @@ class ChatItem(Widget):
         #chat_info {
             width: 1fr;
             height: 1fr;
-            background: blue;
         }
 
         #timestamp {
@@ -57,8 +56,7 @@ class ChatItem(Widget):
                     yesterday = datetime.now() - timedelta(days=1)
 
                     if date.date() == today.date():
-                        yield Label("Yesterday", id="timestamp") 
-                        # yield Label(str(date.strftime("%H:%M")), id="timestamp")
+                        yield Label(str(date.strftime("%H:%M")), id="timestamp")
                     elif date.date() == yesterday.date():
                         yield Label("Yesterday", id="timestamp") 
                     else:
