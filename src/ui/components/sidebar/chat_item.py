@@ -8,19 +8,35 @@ from src.models.chat import Chat
 class ChatItem(Widget):
     DEFAULT_CSS = """
         .chat_item_container {
+            width: 100%;
             height: 6;
             border: solid $foreground;
             background: $background;
         }
+
         #chat_content {
-            width: 80%;
+            width: 4fr;
+            height: 1fr;
         }
+
         #chat_info {
-            width: 20%;
+            width: 1fr;
+            height: 1fr;
             background: blue;
-            align: center middle;
-            content-align: center middle;
         }
+
+        #timestamp {
+            width: 100%;
+            height: 1fr;
+            content-align: right top;
+        }
+
+        #notification {
+            width: 100%;
+            height: 1fr;
+            content-align: right bottom;
+        }
+
         #last_message {
             color: $text-muted;
         }
@@ -31,18 +47,18 @@ class ChatItem(Widget):
     
     def compose(self) -> ComposeResult:
         with Horizontal(classes="chat_item_container"):
-            with Container():
-                with Vertical(id="chat_content"):
-                    yield Label(self.chat.name, id="chat_name")
-                
-                    yield Label(self.chat.messages[-1].content if self.chat.messages else "No messages yet.", id="last_message")
-            with Container(id="chat_info"):
+            with Vertical(id="chat_content"):
+                yield Label(self.chat.name, id="chat_name")
+            
+                yield Label(self.chat.messages[-1].content if self.chat.messages else "No messages yet.", id="last_message")
+            with Vertical(id="chat_info"):
                 if date := datetime.fromisoformat(self.chat.messages[-1].timestamp):
                     today = datetime.now()
                     yesterday = datetime.now() - timedelta(days=1)
 
                     if date.date() == today.date():
-                        yield Label(str(date.strftime("%H:%M")), id="timestamp")
+                        yield Label("Yesterday", id="timestamp") 
+                        # yield Label(str(date.strftime("%H:%M")), id="timestamp")
                     elif date.date() == yesterday.date():
                         yield Label("Yesterday", id="timestamp") 
                     else:
