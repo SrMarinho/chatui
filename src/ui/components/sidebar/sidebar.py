@@ -1,29 +1,58 @@
 import logging
 from textual.app import ComposeResult
-from textual.widgets import Label
+from textual.widgets import Label, Input
 from textual.widget import Widget
-from textual.message import Message
+from textual.reactive import reactive
+from textual.containers import VerticalScroll
 from src.ui.components.sidebar.chat_item import ChatItem
 from src.models.chat import Chat
 
 
 class Sidebar(Widget):
+    DEFAULT_CSS = """
+        Sidebar > * {
+            height: 100%;
+        }
+    """
     """Sidebar component for the UI."""
-    def __init__(self, chats: list[Chat], *args, **kwargs) -> None:
+    # Remova o setter customizado e use reactive diretamente
+    chats: reactive[list[Chat]] = reactive([])
+    current_chat = reactive(None)
+
+    def __init__(self, *args, **kwargs) -> None:
         super().__init__(*args, **kwargs)
-        self.chats = chats
-        self.current_chat = None
     
     def compose(self) -> ComposeResult:
         """Compose the sidebar UI components."""
-        logging.info("Composing Sidebar with chats.")
-        for chat in list(self.chats):
-            yield Label("Chats", id="sidebar_title")
-            yield ChatItem(chat)
+        self.notify("Composing Sidebar with chats.")
+        
+        yield Label("Chats", id="sidebar_title")
+        yield Input(placeholder="Search chats...", id="chat_search_input")
+        with VerticalScroll(id="chats_container"):
+            ...
     
     def on_mount(self):
-        self.notify(f"Sidebar mounted with {len(self.chats)} chats.")
+        """Handle mount events."""
+        # Carregue os chats iniciais se houver
+        if self.chats:
+            self.load_chats()
 
-    def on_chat_item_selected(self) -> None:
-        """Handle chat item selection events."""
-        self.post_message(self.ChatSelected(self.current_chat))
+    def watch_chats(self, old_chats: list[Chat], new_chats: list[Chat]) -> None:
+        """Watch for changes in the chats list."""
+        self.notify(f"Sidebar detected chat list change: {len(old_chats)} -> {len(new_chats)}")
+        self.load_chats()
+    
+    def load_chats(self) -> None:
+        """Load chats into the sidebar."""
+        chats_container = self.query_one("#chats_container", VerticalScroll)
+        
+        # Limpe o container
+        chats_container.remove_children()
+        
+        # Adicione os novos chats
+        for index, chat in enumerate(self.chats):
+            self.notify(f"Loading chat item: {chat.name}")
+            chats_container.mount(ChatItem(chat, id=f"chat_item_{index}"))
+        
+        # Se necessário, force um refresh
+        self.refresh()
