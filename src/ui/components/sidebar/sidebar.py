@@ -11,7 +11,7 @@ from src.models.chat import Chat
 class Sidebar(Widget):
     DEFAULT_CSS = """
         #chats_container > * {
-            height: 6;
+            height: auto;
         }
     """
     """Sidebar component for the UI."""
@@ -33,7 +33,6 @@ class Sidebar(Widget):
     
     def on_mount(self):
         """Handle mount events."""
-        # Carregue os chats iniciais se houver
         if self.chats:
             self.load_chats()
 
@@ -46,10 +45,7 @@ class Sidebar(Widget):
         """Load chats into the sidebar."""
         chats_container = self.query_one("#chats_container", VerticalScroll)
         
-        # Limpe o container
         chats_container.remove_children()
-        
-        # Adicione os novos chats
         for index, chat in enumerate(self.chats):
             self.notify(f"Loading chat item: {chat.name}")
             chats_container.mount(ChatItem(chat, id=f"chat_item_{index}"))

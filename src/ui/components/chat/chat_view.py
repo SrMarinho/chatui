@@ -39,3 +39,4 @@ class ChatView(Widget):
         send_button = self.query_one("#send_button", Button)
         send_button.disabled = len(self.current_text.strip()) == 0
         send_button.variant = "primary" if not send_button.disabled else "default"
+    
