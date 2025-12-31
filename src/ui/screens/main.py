@@ -51,3 +51,6 @@ class MainScreen(Screen):
                 participants=[user1, user2],
                 messages=[message1, message2]
             )
+    
+    def on_chat_item_selected(self, selected):
+        self.current_chat = selected.chat

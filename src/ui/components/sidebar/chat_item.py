@@ -5,9 +5,15 @@ from textual.widget import Widget
 from textual.widgets import Label
 from textual.containers import Vertical, Horizontal
 from textual.events import Click
+from textual.message import Message
 from src.models.chat import Chat
 
 class ChatItem(Widget):
+    class Selected(Message):
+        def __init__(self, chat: Chat):
+            self.chat = chat
+            super().__init__()
+
     DEFAULT_CSS = """
         .chat_item_container {
             width: 100%;
@@ -80,5 +86,4 @@ class ChatItem(Widget):
                 yield Label(str(1), id="notification")
     
     def on_click(self, event: Click):
-        if event.widget:
-            self.app.notify(self.chat.name)
+        self.post_message(ChatItem.Selected(self.chat))
